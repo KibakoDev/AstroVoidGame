@@ -7,7 +7,7 @@ int main()
 {
     Application app;
 
-    if (!app.Init(1280, 720, "Astro Void"))
+    if (!app.Init(1920, 1080, "Astro Void"))
         return -1;
 
     AstroVoidLayer game(app);

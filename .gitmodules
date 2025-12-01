@@ -1,0 +1,3 @@
+[submodule "extern/KibakoEngine"]
+	path = extern/KibakoEngine
+	url = https://github.com/KibakoDev/KibakoEngine

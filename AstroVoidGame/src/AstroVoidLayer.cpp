@@ -27,7 +27,7 @@ void AstroVoidLayer::OnAttach()
     auto& assets = m_app.Assets();
 
     // Load UI font (same as sandbox for now, tu changeras pour ta vraie font Astro Void)
-    m_uiFont = assets.LoadFontTTF("ui.astrovoid", "assets/fonts/RobotoMono-Regular.ttf", 32);
+    m_uiFont = assets.LoadFontTTF("ui.astrovoid", "assets/fonts/dogica.ttf", 32);
     if (!m_uiFont) {
         KbkWarn(kLogChannel, "Failed to load UI font for Astro Void");
     }

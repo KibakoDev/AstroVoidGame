@@ -169,17 +169,17 @@ void AstroVoidLayer::BuildUI()
     auto& title = root.EmplaceChild<KibakoEngine::UILabel>("Title");
     style.ApplyHeading(title);
     title.SetText("ASTRO VOID");
-    title.SetPosition(layout.titlePosition);
+    title.SetPosition({ layout.titleX, layout.titleY });
 
     // New Game Button
     auto& newGameBtn = root.EmplaceChild<KibakoEngine::UIButton>("NewGameButton");
     newGameBtn.SetText("NEW GAME");
-    newGameBtn.SetPosition(layout.newGamePosition);
+    newGameBtn.SetPosition({ layout.newGameX, layout.newGameY });
 
     // Quit Game Button
     auto& quitBtn = root.EmplaceChild<KibakoEngine::UIButton>("QuitButton");
     quitBtn.SetText("QUIT GAME");
-    quitBtn.SetPosition(layout.quitGamePosition);
+    quitBtn.SetPosition({ layout.quitGameX, layout.quitGameY });
 
     m_titleLabel = &title;
     m_newGameButton = &newGameBtn;

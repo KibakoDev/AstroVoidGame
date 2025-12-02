@@ -68,5 +68,4 @@ private:
     ScreenSize m_lastScreenSize{};
 
     float m_time = 0.0f;
-
 };

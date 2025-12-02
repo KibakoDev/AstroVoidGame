@@ -17,10 +17,14 @@ namespace
 
     struct MenuLayout
     {
-        KibakoEngine::Vec2 titlePosition{};
-        KibakoEngine::Vec2 newGamePosition{};
-        KibakoEngine::Vec2 quitGamePosition{};
-        KibakoEngine::Vec2 buttonSize{};
+        float titleX = 0.0f;
+        float titleY = 0.0f;
+        float newGameX = 0.0f;
+        float newGameY = 0.0f;
+        float quitGameX = 0.0f;
+        float quitGameY = 0.0f;
+        float buttonWidth = 0.0f;
+        float buttonHeight = 0.0f;
     };
 
     MenuLayout CalculateLayout(float width, float height)
@@ -29,13 +33,20 @@ namespace
 
         const float centerX = width * 0.5f;
 
-        layout.buttonSize = { kButtonWidth, kButtonHeight };
-        const float stackX = centerX - (layout.buttonSize.x * 0.5f);
+        layout.buttonWidth = kButtonWidth;
+        layout.buttonHeight = kButtonHeight;
+
+        const float stackX = centerX - (layout.buttonWidth * 0.5f);
         const float firstButtonY = height * 0.38f;
 
-        layout.titlePosition = { centerX - (layout.buttonSize.x * 0.45f), kTitleYOffset };
-        layout.newGamePosition = { stackX, firstButtonY };
-        layout.quitGamePosition = { stackX, firstButtonY + layout.buttonSize.y + kButtonSpacing };
+        layout.titleX = centerX - (layout.buttonWidth * 0.45f);
+        layout.titleY = kTitleYOffset;
+
+        layout.newGameX = stackX;
+        layout.newGameY = firstButtonY;
+
+        layout.quitGameX = stackX;
+        layout.quitGameY = firstButtonY + layout.buttonHeight + kButtonSpacing;
 
         return layout;
     }

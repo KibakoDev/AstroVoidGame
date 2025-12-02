@@ -10,59 +10,57 @@ namespace
 {
     constexpr const char* kLogChannel = "AstroVoid";
 
-    constexpr float kTitleYOffset = 84.0f;
-    constexpr float kButtonHeight = 56.0f;
-    constexpr float kButtonSpacing = 18.0f;
-    constexpr float kButtonWidth = 320.0f;
+    struct MenuTheme
+    {
+        float headingTop = 92.0f;
+        float buttonHeight = 60.0f;
+        float buttonWidth = 360.0f;
+        float buttonSpacing = 22.0f;
+        float firstButtonYFactor = 0.42f;
+    };
 
     struct MenuLayout
     {
-        float titleX = 0.0f;
-        float titleY = 0.0f;
-        float newGameX = 0.0f;
+        float headingX = 0.0f;
+        float headingY = 0.0f;
+        float buttonX = 0.0f;
         float newGameY = 0.0f;
-        float quitGameX = 0.0f;
         float quitGameY = 0.0f;
-        float buttonWidth = 0.0f;
-        float buttonHeight = 0.0f;
     };
-
-    MenuLayout CalculateLayout(float width, float height)
-    {
-        MenuLayout layout{};
-
-        const float centerX = width * 0.5f;
-
-        layout.buttonWidth = kButtonWidth;
-        layout.buttonHeight = kButtonHeight;
-
-        const float stackX = centerX - (layout.buttonWidth * 0.5f);
-        const float firstButtonY = height * 0.38f;
-
-        layout.titleX = centerX - (layout.buttonWidth * 0.45f);
-        layout.titleY = kTitleYOffset;
-
-        layout.newGameX = stackX;
-        layout.newGameY = firstButtonY;
-
-        layout.quitGameX = stackX;
-        layout.quitGameY = firstButtonY + layout.buttonHeight + kButtonSpacing;
-
-        return layout;
-    }
 
     KibakoEngine::UIStyle BuildMenuStyle(const KibakoEngine::Font* font)
     {
         KibakoEngine::UIStyle style{};
         style.font = font;
-        style.headingColor = KibakoEngine::Color4{ 1.0f, 1.0f, 1.0f, 1.0f };
-        style.primaryTextColor = KibakoEngine::Color4{ 0.90f, 0.93f, 1.0f, 1.0f };
-        style.mutedTextColor = KibakoEngine::Color4{ 0.65f, 0.68f, 0.76f, 1.0f };
-        style.headingScale = 1.3f;
+        style.headingColor = KibakoEngine::Color4{ 0.96f, 0.98f, 1.0f, 1.0f };
+        style.primaryTextColor = KibakoEngine::Color4{ 0.86f, 0.90f, 1.0f, 1.0f };
+        style.mutedTextColor = KibakoEngine::Color4{ 0.56f, 0.60f, 0.70f, 1.0f };
+        style.headingScale = 1.4f;
         style.bodyScale = 1.0f;
-        style.captionScale = 0.85f;
+        style.captionScale = 0.88f;
 
         return style;
+    }
+
+    MenuTheme BuildMenuTheme()
+    {
+        return MenuTheme{};
+    }
+
+    MenuLayout CalculateLayout(const AstroVoidLayer::ScreenSize& screen, const MenuTheme& theme)
+    {
+        MenuLayout layout{};
+
+        const float centerX = screen.width * 0.5f;
+
+        layout.headingX = centerX - (theme.buttonWidth * 0.5f);
+        layout.headingY = theme.headingTop;
+
+        layout.buttonX = centerX - (theme.buttonWidth * 0.5f);
+        layout.newGameY = screen.height * theme.firstButtonYFactor;
+        layout.quitGameY = layout.newGameY + theme.buttonHeight + theme.buttonSpacing;
+
+        return layout;
     }
 }
 
@@ -83,6 +81,8 @@ void AstroVoidLayer::OnAttach()
         KbkWarn(kLogChannel, "Failed to load UI font for Astro Void");
     }
 
+    m_menuStyle = BuildMenuStyle(m_uiFont);
+
     // Hook UISystem to engine input so controls can react to keyboard/gamepad later.
     m_uiSystem.SetInput(&m_app.InputSys());
 
@@ -97,6 +97,7 @@ void AstroVoidLayer::OnDetach()
     m_uiSystem.Clear();
 
     m_uiFont = nullptr;
+    m_menuStyle = {};
     m_titleLabel = nullptr;
     m_newGameButton = nullptr;
     m_quitButton = nullptr;
@@ -152,39 +153,46 @@ void AstroVoidLayer::BuildUI()
     if (!m_uiFont)
         return;
 
-    const UIStyle style = BuildMenuStyle(m_uiFont);
+    const MenuTheme theme = BuildMenuTheme();
+
+    // Hold onto the style to re-apply if we rebuild individual elements later on.
+    if (!m_menuStyle.font)
+    {
+        m_menuStyle = BuildMenuStyle(m_uiFont);
+    }
 
     auto screen = std::make_unique<UIScreen>();
     auto& root = screen->Root();
 
-    const float width = static_cast<float>(m_app.Width());
-    const float height = static_cast<float>(m_app.Height());
+    const ScreenSize screenSize{
+        static_cast<float>(m_app.Width()),
+        static_cast<float>(m_app.Height())
+    };
 
-    m_lastScreenSize = { width, height };
-    const MenuLayout layout = CalculateLayout(width, height);
+    m_lastScreenSize = screenSize;
+    const MenuLayout layout = CalculateLayout(screenSize, theme);
 
     // --- Build Menu ---
 
     // Title
     auto& title = root.EmplaceChild<KibakoEngine::UILabel>("Title");
-    style.ApplyHeading(title);
+    m_menuStyle.ApplyHeading(title);
     title.SetText("ASTRO VOID");
-    title.SetPosition({ layout.titleX, layout.titleY });
 
     // New Game Button
     auto& newGameBtn = root.EmplaceChild<KibakoEngine::UIButton>("NewGameButton");
     newGameBtn.SetText("NEW GAME");
-    newGameBtn.SetPosition({ layout.newGameX, layout.newGameY });
 
     // Quit Game Button
     auto& quitBtn = root.EmplaceChild<KibakoEngine::UIButton>("QuitButton");
     quitBtn.SetText("QUIT GAME");
-    quitBtn.SetPosition({ layout.quitGameX, layout.quitGameY });
 
     m_titleLabel = &title;
     m_newGameButton = &newGameBtn;
     m_quitButton = &quitBtn;
     m_menuScreen = screen.get();
+
+    ApplyMenuLayout(layout);
 
     m_uiSystem.PushScreen(std::move(screen));
 
@@ -198,12 +206,40 @@ void AstroVoidLayer::UpdateUI(float dt)
 
     if (width != m_lastScreenSize.width || height != m_lastScreenSize.height)
     {
-        BuildUI();
+        const ScreenSize newSize{ width, height };
+        m_lastScreenSize = newSize;
+
+        if (m_menuScreen)
+        {
+            ApplyMenuLayout(CalculateLayout(newSize, BuildMenuTheme()));
+        }
+        else
+        {
+            BuildUI();
+        }
     }
 
     m_uiSystem.SetScreenSize(width, height);
 
     m_uiSystem.Update(dt);
+}
+
+void AstroVoidLayer::ApplyMenuLayout(const MenuLayout& layout)
+{
+    if (m_titleLabel)
+    {
+        m_titleLabel->SetPosition({ layout.headingX, layout.headingY });
+    }
+
+    if (m_newGameButton)
+    {
+        m_newGameButton->SetPosition({ layout.buttonX, layout.newGameY });
+    }
+
+    if (m_quitButton)
+    {
+        m_quitButton->SetPosition({ layout.buttonX, layout.quitGameY });
+    }
 }
 
 // Update Title State

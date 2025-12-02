@@ -12,23 +12,25 @@ namespace
 
     struct MenuTheme
     {
-        float headingTop = 92.0f;
-        float buttonHeight = 60.0f;
-        float buttonWidth = 360.0f;
-        float buttonSpacing = 22.0f;
-        float firstButtonYFactor = 0.42f;
+        float headingTop = 48.0f;
+        float primaryButtonHeight = 86.0f;
+        float primaryButtonWidth = 420.0f;
+        float secondaryButtonHeight = 56.0f;
+        float secondaryButtonWidth = 260.0f;
+        float primaryButtonYFactor = 0.36f;
+        float buttonSpacing = 96.0f;
     };
 
     KibakoEngine::UIStyle BuildMenuStyle(const KibakoEngine::Font* font)
     {
         KibakoEngine::UIStyle style{};
         style.font = font;
-        style.headingColor = KibakoEngine::Color4{ 0.96f, 0.98f, 1.0f, 1.0f };
-        style.primaryTextColor = KibakoEngine::Color4{ 0.86f, 0.90f, 1.0f, 1.0f };
-        style.mutedTextColor = KibakoEngine::Color4{ 0.56f, 0.60f, 0.70f, 1.0f };
-        style.headingScale = 1.4f;
-        style.bodyScale = 1.0f;
-        style.captionScale = 0.88f;
+        style.headingColor = KibakoEngine::Color4{ 1.0f, 1.0f, 1.0f, 1.0f };
+        style.primaryTextColor = KibakoEngine::Color4{ 1.0f, 1.0f, 1.0f, 1.0f };
+        style.mutedTextColor = KibakoEngine::Color4{ 0.78f, 0.78f, 0.78f, 1.0f };
+        style.headingScale = 2.4f;
+        style.bodyScale = 1.26f;
+        style.captionScale = 1.0f;
 
         return style;
     }
@@ -44,12 +46,18 @@ namespace
 
         const float centerX = screen.width * 0.5f;
 
-        layout.headingX = centerX - (theme.buttonWidth * 0.5f);
+        layout.headingX = centerX - (theme.primaryButtonWidth * 0.5f);
         layout.headingY = theme.headingTop;
 
-        layout.buttonX = centerX - (theme.buttonWidth * 0.5f);
-        layout.newGameY = screen.height * theme.firstButtonYFactor;
-        layout.quitGameY = layout.newGameY + theme.buttonHeight + theme.buttonSpacing;
+        layout.primaryButtonWidth = theme.primaryButtonWidth;
+        layout.primaryButtonHeight = theme.primaryButtonHeight;
+        layout.secondaryButtonWidth = theme.secondaryButtonWidth;
+        layout.secondaryButtonHeight = theme.secondaryButtonHeight;
+
+        layout.primaryButtonX = centerX - (theme.primaryButtonWidth * 0.5f);
+        layout.primaryButtonY = screen.height * theme.primaryButtonYFactor;
+        layout.secondaryButtonX = centerX - (theme.secondaryButtonWidth * 0.5f);
+        layout.secondaryButtonY = layout.primaryButtonY + theme.primaryButtonHeight + theme.buttonSpacing;
 
         return layout;
     }
@@ -172,11 +180,11 @@ void AstroVoidLayer::BuildUI()
 
     // New Game Button
     auto& newGameBtn = root.EmplaceChild<KibakoEngine::UIButton>("NewGameButton");
-    newGameBtn.SetText("NEW GAME");
+    newGameBtn.SetText("NOUVELLE PARTIE");
 
     // Quit Game Button
     auto& quitBtn = root.EmplaceChild<KibakoEngine::UIButton>("QuitButton");
-    quitBtn.SetText("QUIT GAME");
+    quitBtn.SetText("TOUCHES");
 
     m_titleLabel = &title;
     m_newGameButton = &newGameBtn;
@@ -224,12 +232,14 @@ void AstroVoidLayer::ApplyMenuLayout(const MenuLayout& layout)
 
     if (m_newGameButton)
     {
-        m_newGameButton->SetPosition({ layout.buttonX, layout.newGameY });
+        m_newGameButton->SetPosition({ layout.primaryButtonX, layout.primaryButtonY });
+        m_newGameButton->SetSize({ layout.primaryButtonWidth, layout.primaryButtonHeight });
     }
 
     if (m_quitButton)
     {
-        m_quitButton->SetPosition({ layout.buttonX, layout.quitGameY });
+        m_quitButton->SetPosition({ layout.secondaryButtonX, layout.secondaryButtonY });
+        m_quitButton->SetSize({ layout.secondaryButtonWidth, layout.secondaryButtonHeight });
     }
 }
 

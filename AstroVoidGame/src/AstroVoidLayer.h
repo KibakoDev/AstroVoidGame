@@ -31,9 +31,14 @@ struct MenuLayout
 {
     float headingX = 0.0f;
     float headingY = 0.0f;
-    float buttonX = 0.0f;
-    float newGameY = 0.0f;
-    float quitGameY = 0.0f;
+    float primaryButtonX = 0.0f;
+    float primaryButtonY = 0.0f;
+    float primaryButtonWidth = 0.0f;
+    float primaryButtonHeight = 0.0f;
+    float secondaryButtonX = 0.0f;
+    float secondaryButtonY = 0.0f;
+    float secondaryButtonWidth = 0.0f;
+    float secondaryButtonHeight = 0.0f;
 };
 
 // Primary gameplay layer

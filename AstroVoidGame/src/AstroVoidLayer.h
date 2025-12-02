@@ -21,6 +21,8 @@ enum class GameState
     Playing // In Game
 };
 
+struct MenuLayout;
+
 // Primary gameplay layer
 class AstroVoidLayer final : public KibakoEngine::Layer
 {
@@ -36,6 +38,7 @@ private:
     // UI helpers
     void BuildUI();
     void UpdateUI(float dt);
+    void ApplyMenuLayout(const struct MenuLayout& layout);
 
     // State logic
     void UpdateTitle(float dt);
@@ -52,6 +55,7 @@ private:
     // UI
     KibakoEngine::UISystem  m_uiSystem;
     const KibakoEngine::Font* m_uiFont = nullptr;
+    KibakoEngine::UIStyle m_menuStyle{};
 
     // Menu elements
     KibakoEngine::UILabel* m_titleLabel = nullptr;

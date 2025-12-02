@@ -59,5 +59,13 @@ private:
     KibakoEngine::UIButton* m_quitButton = nullptr;
     KibakoEngine::UIScreen* m_menuScreen = nullptr;
 
+    struct ScreenSize
+    {
+        float width = 0.0f;
+        float height = 0.0f;
+    };
+
+    ScreenSize m_lastScreenSize{};
+
     float m_time = 0.0f;
 };

@@ -21,7 +21,20 @@ enum class GameState
     Playing // In Game
 };
 
-struct MenuLayout;
+struct ScreenSize
+{
+    float width = 0.0f;
+    float height = 0.0f;
+};
+
+struct MenuLayout
+{
+    float headingX = 0.0f;
+    float headingY = 0.0f;
+    float buttonX = 0.0f;
+    float newGameY = 0.0f;
+    float quitGameY = 0.0f;
+};
 
 // Primary gameplay layer
 class AstroVoidLayer final : public KibakoEngine::Layer
@@ -62,12 +75,6 @@ private:
     KibakoEngine::UIButton* m_newGameButton = nullptr;
     KibakoEngine::UIButton* m_quitButton = nullptr;
     KibakoEngine::UIScreen* m_menuScreen = nullptr;
-
-    struct ScreenSize
-    {
-        float width = 0.0f;
-        float height = 0.0f;
-    };
 
     ScreenSize m_lastScreenSize{};
 

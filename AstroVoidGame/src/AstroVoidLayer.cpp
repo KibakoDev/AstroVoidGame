@@ -19,15 +19,6 @@ namespace
         float firstButtonYFactor = 0.42f;
     };
 
-    struct MenuLayout
-    {
-        float headingX = 0.0f;
-        float headingY = 0.0f;
-        float buttonX = 0.0f;
-        float newGameY = 0.0f;
-        float quitGameY = 0.0f;
-    };
-
     KibakoEngine::UIStyle BuildMenuStyle(const KibakoEngine::Font* font)
     {
         KibakoEngine::UIStyle style{};

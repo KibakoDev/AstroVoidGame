@@ -138,17 +138,18 @@ void AstroVoidLayer::BuildUI()
 
     // New Game Button
     auto& newGameBtn = root.EmplaceChild<KibakoEngine::UIButton>("NewGameButton");
-    style.ApplyBody(newGameBtn);
     newGameBtn.SetText("NEW GAME");
-    newGameBtn.SetPosition({centerX - buttonWidth * 0.5f,firstButtonY});
+    newGameBtn.SetPosition({ centerX - buttonWidth * 0.5f,firstButtonY });
 
     // Quit Game Button
     auto& quitBtn = root.EmplaceChild<KibakoEngine::UIButton>("QuitButton");
-    style.ApplyBody(quitBtn);
     quitBtn.SetText("QUIT");
     quitBtn.SetPosition({centerX - buttonWidth * 0.5f,secondButtonY});
 
     m_titleLabel = &title;
+    m_newGameButton = &newGameBtn;
+    m_quitButton = &quitBtn;
+    m_menuScreen = screen.get();
 
     m_uiSystem.PushScreen(std::move(screen));
 

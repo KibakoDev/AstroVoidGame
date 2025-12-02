@@ -15,9 +15,13 @@ namespace KibakoEngine {
     class Application;
 }
 
-// Primary gameplay layer used by the sample. This keeps the engine hookup,
-// UI, and scene ownership in one place so you can swap in your own gameplay
-// without touching the application bootstrap.
+enum class GameState
+{
+    Title, // Menu
+    Playing // In Game
+};
+
+// Primary gameplay layer
 class AstroVoidLayer final : public KibakoEngine::Layer
 {
 public:
@@ -33,8 +37,14 @@ private:
     void BuildUI();
     void UpdateUI(float dt);
 
+    // State logic
+    void UpdateTitle(float dt);
+    void UpdatePlaying(float dt);
+
 private:
     KibakoEngine::Application& m_app;
+
+    GameState m_state = GameState::Title;
 
     // Ready your gameplay content
     KibakoEngine::Scene2D m_scene;
@@ -43,10 +53,11 @@ private:
     KibakoEngine::UISystem  m_uiSystem;
     const KibakoEngine::Font* m_uiFont = nullptr;
 
+    // Menu elements
     KibakoEngine::UILabel* m_titleLabel = nullptr;
-    KibakoEngine::UILabel* m_subtitleLabel = nullptr;
-    KibakoEngine::UILabel* m_hintLabel = nullptr;
-    KibakoEngine::UIScreen* m_hudScreen = nullptr;
+    KibakoEngine::UIButton* m_newGameButton = nullptr;
+    KibakoEngine::UIButton* m_quitButton = nullptr;
+    KibakoEngine::UIScreen* m_menuScreen = nullptr;
 
     float m_time = 0.0f;
 };

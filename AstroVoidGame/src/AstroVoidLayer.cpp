@@ -48,16 +48,29 @@ void AstroVoidLayer::OnDetach()
 
     m_uiFont = nullptr;
     m_titleLabel = nullptr;
-    m_subtitleLabel = nullptr;
-    m_hintLabel = nullptr;
-    m_hudScreen = nullptr;
+    m_newGameButton = nullptr;
+    m_quitButton = nullptr;
+    m_menuScreen = nullptr;
 
     m_time = 0.0f;
 }
 
+
 void AstroVoidLayer::OnUpdate(float dt)
 {
     m_time += dt;
+
+    // State logic
+    switch (m_state)
+    {
+    case GameState::Title:
+        UpdateTitle(dt);
+        break;
+
+    case GameState::Playing:
+        UpdatePlaying(dt);
+        break;
+    }
 
     UpdateUI(dt);
 }
@@ -76,10 +89,11 @@ void AstroVoidLayer::OnRender(SpriteBatch2D& batch)
 
 void AstroVoidLayer::BuildUI()
 {
+    // Menu elements
     m_titleLabel = nullptr;
-    m_subtitleLabel = nullptr;
-    m_hintLabel = nullptr;
-    m_hudScreen = nullptr;
+    m_newGameButton = nullptr;
+    m_quitButton = nullptr;
+    m_menuScreen = nullptr;
 
     m_uiSystem.Clear();
 
@@ -101,40 +115,46 @@ void AstroVoidLayer::BuildUI()
     const float width = static_cast<float>(m_app.Width());
     const float height = static_cast<float>(m_app.Height());
 
+    // Text Values
     const float centerX = width * 0.5f;
     const float centerY = height * 0.5f;
     const float left = centerX - kTitleOffsetX;
     const float baselineY = centerY - kTitleOffsetY;
 
+    // Button Values
+    const float buttonWidth = 260.0f;
+    const float buttonHeight = 48.0f;
+
+    const float firstButtonY = centerY - 20.0f;   // New Game
+    const float secondButtonY = firstButtonY + buttonHeight + 16.0f; // Quit
+
+    // --- Build Menu ---
+
     // Title
-    auto& title = root.EmplaceChild<UILabel>("Title");
+    auto& title = root.EmplaceChild<KibakoEngine::UILabel>("Title");
     style.ApplyHeading(title);
     title.SetText("ASTRO VOID");
-    title.SetPosition({ left, baselineY });
+    title.SetPosition({ centerX - 200.0f, height * 0.20f });
 
-    // Subtitle
-    auto& subtitle = root.EmplaceChild<UILabel>("Subtitle");
-    style.ApplyBody(subtitle);
-    subtitle.SetText("Prototype powered by Kibako Engine");
-    subtitle.SetPosition({ left, baselineY + kSubtitleSpacing });
-    subtitle.SetColor(style.mutedTextColor);
+    // New Game Button
+    auto& newGameBtn = root.EmplaceChild<KibakoEngine::UIButton>("NewGameButton");
+    style.ApplyBody(newGameBtn);
+    newGameBtn.SetText("NEW GAME");
+    newGameBtn.SetPosition({centerX - buttonWidth * 0.5f,firstButtonY});
 
-    // Hint
-    auto& hint = root.EmplaceChild<UILabel>("Hint");
-    style.ApplyCaption(hint);
-    hint.SetText("Press ENTER to start (wire input in OnUpdate)");
-    hint.SetPosition({ left, baselineY + kSubtitleSpacing + kHintSpacing });
-    hint.SetColor(style.mutedTextColor);
+    // Quit Game Button
+    auto& quitBtn = root.EmplaceChild<KibakoEngine::UIButton>("QuitButton");
+    style.ApplyBody(quitBtn);
+    quitBtn.SetText("QUIT");
+    quitBtn.SetPosition({centerX - buttonWidth * 0.5f,secondButtonY});
 
     m_titleLabel = &title;
-    m_subtitleLabel = &subtitle;
-    m_hintLabel = &hint;
-    m_hudScreen = screen.get();
 
     m_uiSystem.PushScreen(std::move(screen));
 
 }
 
+// Update UI
 void AstroVoidLayer::UpdateUI(float dt)
 {
     (void)dt;
@@ -144,4 +164,16 @@ void AstroVoidLayer::UpdateUI(float dt)
         static_cast<float>(m_app.Height()));
 
     m_uiSystem.Update(dt);
+}
+
+// Update Title State
+void AstroVoidLayer::UpdateTitle(float dt)
+{
+    (void)dt;
+}
+
+//Update Playing State
+void AstroVoidLayer::UpdatePlaying(float dt)
+{
+    (void)dt;
 }

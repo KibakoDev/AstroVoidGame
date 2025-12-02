@@ -1,3 +1,4 @@
+// main.cpp
 #include "KibakoEngine/Core/Application.h"
 #include "AstroVoidLayer.h"
 
@@ -10,6 +11,7 @@ int main()
     if (!app.Init(1920, 1080, "Astro Void"))
         return -1;
 
+    // Push the gameplay layer that owns the scene and UI.
     AstroVoidLayer game(app);
     app.PushLayer(&game);
 

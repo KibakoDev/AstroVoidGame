@@ -1,4 +1,4 @@
-// AstroVoidLayer.h - Main gameplay layer for Astro Void
+// AstroVoidLayer.h
 #pragma once
 
 #include <cstdint>
@@ -15,6 +15,9 @@ namespace KibakoEngine {
     class Application;
 }
 
+// Primary gameplay layer used by the sample. This keeps the engine hookup,
+// UI, and scene ownership in one place so you can swap in your own gameplay
+// without touching the application bootstrap.
 class AstroVoidLayer final : public KibakoEngine::Layer
 {
 public:
@@ -26,14 +29,14 @@ public:
     void OnRender(KibakoEngine::SpriteBatch2D& batch) override;
 
 private:
-    // Internal helpers
+    // UI helpers
     void BuildUI();
     void UpdateUI(float dt);
 
 private:
     KibakoEngine::Application& m_app;
 
-    // For later: real game scene (player ship, asteroids, etc.)
+    // Ready your gameplay content
     KibakoEngine::Scene2D m_scene;
 
     // UI

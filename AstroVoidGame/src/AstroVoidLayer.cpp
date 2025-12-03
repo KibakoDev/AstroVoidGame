@@ -82,23 +82,14 @@ void AstroVoidLayer::OnDetach()
     m_uiFont = nullptr;
 
     m_uiSystem.Clear();
-    m_titleLabel = nullptr;
-    m_newGameButton = nullptr;
-    m_quitButton = nullptr;
     m_menuBackdrop = nullptr;
     m_menuScreen = nullptr;
 }
 
 void AstroVoidLayer::OnUpdate(float dt)
 {
-    switch (m_state) {
-    case GameState::Title:
-        // Waiting for player input on the main menu.
-        break;
-    case GameState::Playing:
+    if (m_state == GameState::Playing)
         m_time += dt;
-        break;
-    }
 
     UpdateUI(dt);
 }
@@ -111,9 +102,6 @@ void AstroVoidLayer::OnRender(SpriteBatch2D& batch)
 
 void AstroVoidLayer::BuildUI()
 {
-    m_titleLabel = nullptr;
-    m_newGameButton = nullptr;
-    m_quitButton = nullptr;
     m_menuBackdrop = nullptr;
     m_menuScreen = nullptr;
     m_uiSystem.Clear();
@@ -176,7 +164,6 @@ void AstroVoidLayer::BuildUI()
     title.SetScale(scaledTheme.titleScale + (0.25f * m_uiScale));
     title.SetText("ASTRO VOID");
     title.SetPosition({ 0.0f, yOffset });
-    m_titleLabel = &title;
     yOffset += scaledTheme.titleSpacing;
 
     auto makeMenuButton = [&](const char* name, const char* text, auto onClick) -> UIButton& {
@@ -190,12 +177,12 @@ void AstroVoidLayer::BuildUI()
         return btn;
     };
 
-    m_newGameButton = &makeMenuButton("Menu.NewGame", "NEW GAME", [this]() {
+    makeMenuButton("Menu.NewGame", "NEW GAME", [this]() {
         m_time = 0.0f;
         m_state = GameState::Playing;
     });
 
-    m_quitButton = &makeMenuButton("Menu.Quit", "QUIT", []() {
+    makeMenuButton("Menu.Quit", "QUIT", []() {
         SDL_Event quit{};
         quit.type = SDL_QUIT;
         SDL_PushEvent(&quit);
@@ -207,8 +194,6 @@ void AstroVoidLayer::BuildUI()
 
 void AstroVoidLayer::UpdateUI(float dt)
 {
-    (void)dt;
-
     const float screenW = static_cast<float>(m_app.Width());
     const float screenH = static_cast<float>(m_app.Height());
 

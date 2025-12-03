@@ -147,10 +147,19 @@ void AstroVoidLayer::BuildUI()
     UIScreen& menu = m_uiSystem.CreateScreen("Menu");
     auto& menuRoot = menu.Root();
 
+    constexpr int kMenuButtonCount = 2;
+    const float panelPaddingX = scaledTheme.buttonPadding.x * 2.0f;
+    const float panelPaddingY = scaledTheme.buttonPadding.y * 4.0f;
+    const float contentWidth = scaledTheme.buttonSize.x + (panelPaddingX * 2.0f);
+    const float buttonsHeight = (scaledTheme.buttonSize.y * kMenuButtonCount) +
+        (scaledTheme.verticalSpacing * static_cast<float>(kMenuButtonCount - 1));
+    const float contentHeight = scaledTheme.titleSpacing + (scaledTheme.buttonSize.y * 0.75f) +
+        buttonsHeight + panelPaddingY;
+
     auto& dim = menuRoot.EmplaceChild<UIPanel>("Menu.Backdrop");
     dim.SetColor(kMenuTheme.background);
-    dim.SetAnchor(UIAnchor::TopLeft);
-    dim.SetSize({ screenW, screenH });
+    dim.SetAnchor(UIAnchor::Center);
+    dim.SetSize({ contentWidth, contentHeight });
     m_menuBackdrop = &dim;
 
     auto& stack = menuRoot.EmplaceChild<UIElement>("Menu.Stack");
@@ -207,9 +216,6 @@ void AstroVoidLayer::UpdateUI(float dt)
     }
 
     m_uiSystem.SetScreenSize(screenW, screenH);
-
-    if (m_menuBackdrop)
-        m_menuBackdrop->SetSize({ screenW, screenH });
 
     if (m_menuScreen)
         m_menuScreen->SetVisible(m_state == GameState::Title);

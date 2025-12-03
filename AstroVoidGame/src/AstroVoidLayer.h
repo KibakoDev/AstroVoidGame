@@ -24,6 +24,6 @@ private:
     KibakoEngine::Application& m_app;
 
     KibakoEngine::Scene2D m_scene;
-    
+
     float m_time = 0.0f;
 };

@@ -239,7 +239,7 @@ float AstroVoidLayer::ComputeUiScale(float screenWidth, float screenHeight) cons
 
     const float widthScale = screenWidth / kReferenceWidth;
     const float heightScale = screenHeight / kReferenceHeight;
-    const float rawScale = std::min(widthScale, heightScale);
+    const float rawScale = (std::min)(widthScale, heightScale);
 
     return std::clamp(rawScale, 0.6f, 1.5f);
 }

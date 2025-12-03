@@ -11,14 +11,12 @@ namespace KibakoEngine {
     class Application;
 }
 
-// Simple gameplay state
 enum class GameState
 {
     Title,
     Playing,
 };
 
-// Primary gameplay layer
 class AstroVoidLayer final : public KibakoEngine::Layer
 {
 public:
@@ -40,9 +38,6 @@ private:
     KibakoEngine::Scene2D m_scene;
     const KibakoEngine::Font* m_uiFont = nullptr;
     KibakoEngine::UISystem m_uiSystem;
-    KibakoEngine::UILabel* m_titleLabel = nullptr;
-    KibakoEngine::UIButton* m_newGameButton = nullptr;
-    KibakoEngine::UIButton* m_quitButton = nullptr;
     KibakoEngine::UIPanel* m_menuBackdrop = nullptr;
     KibakoEngine::UIScreen* m_menuScreen = nullptr;
 

@@ -4,10 +4,19 @@
 #include "KibakoEngine/Core/Layer.h"
 #include "KibakoEngine/Renderer/SpriteTypes.h"
 #include "KibakoEngine/Scene/Scene2D.h"
+#include "KibakoEngine/Fonts/Font.h"
+#include "KibakoEngine/UI/UIControls.h"
 
 namespace KibakoEngine {
     class Application;
 }
+
+// Simple gameplay state
+enum class GameState
+{
+    Title,
+    Playing,
+};
 
 // Primary gameplay layer
 class AstroVoidLayer final : public KibakoEngine::Layer
@@ -21,9 +30,25 @@ public:
     void OnRender(KibakoEngine::SpriteBatch2D& batch) override;
 
 private:
+    void BuildUI();
+    void UpdateUI(float dt);
+    [[nodiscard]] float ComputeUiScale(float screenWidth, float screenHeight) const;
+
+private:
     KibakoEngine::Application& m_app;
 
     KibakoEngine::Scene2D m_scene;
+    const KibakoEngine::Font* m_uiFont = nullptr;
+    KibakoEngine::UISystem m_uiSystem;
+    KibakoEngine::UILabel* m_titleLabel = nullptr;
+    KibakoEngine::UIButton* m_newGameButton = nullptr;
+    KibakoEngine::UIButton* m_quitButton = nullptr;
+    KibakoEngine::UIPanel* m_menuBackdrop = nullptr;
+    KibakoEngine::UIScreen* m_menuScreen = nullptr;
 
+    GameState m_state = GameState::Title;
     float m_time = 0.0f;
+    float m_uiScale = 1.0f;
+    float m_lastUiWidth = 0.0f;
+    float m_lastUiHeight = 0.0f;
 };

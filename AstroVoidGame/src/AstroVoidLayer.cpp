@@ -40,7 +40,7 @@ namespace
         return MenuTheme{};
     }
 
-    MenuLayout CalculateLayout(const AstroVoidLayer::ScreenSize& screen, const MenuTheme& theme)
+    MenuLayout CalculateLayout(const ScreenSize& screen, const MenuTheme& theme)
     {
         MenuLayout layout{};
 

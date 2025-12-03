@@ -17,8 +17,7 @@ namespace
 
     struct AstroVoidMenuTheme
     {
-        Color4 background{ 0.0f, 0.0f, 0.0f, 0.78f };
-        Color4 panelColor{ 0.55f, 0.05f, 0.05f, 0.88f };
+        Color4 panel{ 1.0f, 1.0f, 1.0f, 0.0f };
         Color4 buttonNormal{ 1.0f, 1.0f, 1.0f, 1.0f };
         Color4 buttonHover{ 0.88f, 0.88f, 0.88f, 1.0f };
         Color4 buttonPressed{ 0.78f, 0.78f, 0.78f, 1.0f };
@@ -113,8 +112,7 @@ void AstroVoidLayer::BuildUI()
     const float screenH = static_cast<float>(m_app.Height());
 
     const AstroVoidMenuTheme scaledTheme{
-        kMenuTheme.background,
-        kMenuTheme.panelColor,
+        kMenuTheme.panel,
         kMenuTheme.buttonNormal,
         kMenuTheme.buttonHover,
         kMenuTheme.buttonPressed,
@@ -133,7 +131,7 @@ void AstroVoidLayer::BuildUI()
     style.headingColor = Color4::White();
     style.primaryTextColor = Color4::Black();
     style.mutedTextColor = kMenuTheme.muted;
-    style.panelColor = kMenuTheme.panelColor;
+    style.panelColor = kMenuTheme.panel;
     style.buttonNormal = kMenuTheme.buttonNormal;
     style.buttonHover = kMenuTheme.buttonHover;
     style.buttonPressed = kMenuTheme.buttonPressed;
@@ -157,7 +155,7 @@ void AstroVoidLayer::BuildUI()
         buttonsHeight + panelPaddingY;
 
     auto& dim = menuRoot.EmplaceChild<UIPanel>("Menu.Backdrop");
-    dim.SetColor(kMenuTheme.background);
+    dim.SetColor(kMenuTheme.panel);
     dim.SetAnchor(UIAnchor::Center);
     dim.SetSize({ contentWidth, contentHeight });
     m_menuBackdrop = &dim;

@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 #include "KibakoEngine/Core/Layer.h"
 #include "KibakoEngine/Renderer/SpriteTypes.h"
@@ -41,6 +42,24 @@ struct MenuLayout
     float secondaryButtonHeight = 0.0f;
 };
 
+struct MenuTheme
+{
+    float headingTop = 48.0f;
+    float primaryButtonHeight = 86.0f;
+    float primaryButtonWidth = 420.0f;
+    float secondaryButtonHeight = 56.0f;
+    float secondaryButtonWidth = 260.0f;
+    float primaryButtonYFactor = 0.36f;
+    float buttonSpacing = 96.0f;
+};
+
+struct MenuContent
+{
+    std::string title = "ASTRO VOID";
+    std::string startLabel = "NOUVELLE PARTIE";
+    std::string controlsLabel = "TOUCHES";
+};
+
 // Primary gameplay layer
 class AstroVoidLayer final : public KibakoEngine::Layer
 {
@@ -57,6 +76,9 @@ private:
     void BuildUI();
     void UpdateUI(float dt);
     void ApplyMenuLayout(const struct MenuLayout& layout);
+    MenuLayout CalculateLayout(const ScreenSize& screen) const;
+    void BuildMenuElements(KibakoEngine::UIElement& root);
+    void ResetMenuReferences();
 
     // State logic
     void UpdateTitle(float dt);
@@ -74,6 +96,8 @@ private:
     KibakoEngine::UISystem  m_uiSystem;
     const KibakoEngine::Font* m_uiFont = nullptr;
     KibakoEngine::UIStyle m_menuStyle{};
+    MenuTheme m_menuTheme{};
+    MenuContent m_menuContent{};
 
     // Menu elements
     KibakoEngine::UILabel* m_titleLabel = nullptr;

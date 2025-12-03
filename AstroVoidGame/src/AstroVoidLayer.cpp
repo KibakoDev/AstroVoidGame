@@ -10,17 +10,6 @@ namespace
 {
     constexpr const char* kLogChannel = "AstroVoid";
 
-    struct MenuTheme
-    {
-        float headingTop = 48.0f;
-        float primaryButtonHeight = 86.0f;
-        float primaryButtonWidth = 420.0f;
-        float secondaryButtonHeight = 56.0f;
-        float secondaryButtonWidth = 260.0f;
-        float primaryButtonYFactor = 0.36f;
-        float buttonSpacing = 96.0f;
-    };
-
     KibakoEngine::UIStyle BuildMenuStyle(const KibakoEngine::Font* font)
     {
         KibakoEngine::UIStyle style{};
@@ -33,33 +22,6 @@ namespace
         style.captionScale = 1.0f;
 
         return style;
-    }
-
-    MenuTheme BuildMenuTheme()
-    {
-        return MenuTheme{};
-    }
-
-    MenuLayout CalculateLayout(const ScreenSize& screen, const MenuTheme& theme)
-    {
-        MenuLayout layout{};
-
-        const float centerX = screen.width * 0.5f;
-
-        layout.headingX = centerX - (theme.primaryButtonWidth * 0.5f);
-        layout.headingY = theme.headingTop;
-
-        layout.primaryButtonWidth = theme.primaryButtonWidth;
-        layout.primaryButtonHeight = theme.primaryButtonHeight;
-        layout.secondaryButtonWidth = theme.secondaryButtonWidth;
-        layout.secondaryButtonHeight = theme.secondaryButtonHeight;
-
-        layout.primaryButtonX = centerX - (theme.primaryButtonWidth * 0.5f);
-        layout.primaryButtonY = screen.height * theme.primaryButtonYFactor;
-        layout.secondaryButtonX = centerX - (theme.secondaryButtonWidth * 0.5f);
-        layout.secondaryButtonY = layout.primaryButtonY + theme.primaryButtonHeight + theme.buttonSpacing;
-
-        return layout;
     }
 }
 
@@ -97,10 +59,9 @@ void AstroVoidLayer::OnDetach()
 
     m_uiFont = nullptr;
     m_menuStyle = {};
-    m_titleLabel = nullptr;
-    m_newGameButton = nullptr;
-    m_quitButton = nullptr;
-    m_menuScreen = nullptr;
+    m_menuTheme = MenuTheme{};
+    m_menuContent = MenuContent{};
+    ResetMenuReferences();
 
     m_lastScreenSize = {};
 
@@ -141,18 +102,12 @@ void AstroVoidLayer::OnRender(SpriteBatch2D& batch)
 
 void AstroVoidLayer::BuildUI()
 {
-    // Menu elements
-    m_titleLabel = nullptr;
-    m_newGameButton = nullptr;
-    m_quitButton = nullptr;
-    m_menuScreen = nullptr;
+    ResetMenuReferences();
 
     m_uiSystem.Clear();
 
     if (!m_uiFont)
         return;
-
-    const MenuTheme theme = BuildMenuTheme();
 
     // Hold onto the style to re-apply if we rebuild individual elements later on.
     if (!m_menuStyle.font)
@@ -169,29 +124,10 @@ void AstroVoidLayer::BuildUI()
     };
 
     m_lastScreenSize = screenSize;
-    const MenuLayout layout = CalculateLayout(screenSize, theme);
 
-    // --- Build Menu ---
-
-    // Title
-    auto& title = root.EmplaceChild<KibakoEngine::UILabel>("Title");
-    m_menuStyle.ApplyHeading(title);
-    title.SetText("ASTRO VOID");
-
-    // New Game Button
-    auto& newGameBtn = root.EmplaceChild<KibakoEngine::UIButton>("NewGameButton");
-    newGameBtn.SetText("NOUVELLE PARTIE");
-
-    // Quit Game Button
-    auto& quitBtn = root.EmplaceChild<KibakoEngine::UIButton>("QuitButton");
-    quitBtn.SetText("TOUCHES");
-
-    m_titleLabel = &title;
-    m_newGameButton = &newGameBtn;
-    m_quitButton = &quitBtn;
     m_menuScreen = screen.get();
 
-    ApplyMenuLayout(layout);
+    ApplyMenuLayout(CalculateLayout(screenSize));
 
     m_uiSystem.PushScreen(std::move(screen));
 
@@ -210,7 +146,7 @@ void AstroVoidLayer::UpdateUI(float dt)
 
         if (m_menuScreen)
         {
-            ApplyMenuLayout(CalculateLayout(newSize, BuildMenuTheme()));
+            ApplyMenuLayout(CalculateLayout(newSize));
         }
         else
         {
@@ -241,6 +177,55 @@ void AstroVoidLayer::ApplyMenuLayout(const MenuLayout& layout)
         m_quitButton->SetPosition({ layout.secondaryButtonX, layout.secondaryButtonY });
         m_quitButton->SetSize({ layout.secondaryButtonWidth, layout.secondaryButtonHeight });
     }
+}
+
+MenuLayout AstroVoidLayer::CalculateLayout(const ScreenSize& screen) const
+{
+    MenuLayout layout{};
+
+    const float centerX = screen.width * 0.5f;
+
+    layout.headingX = centerX - (m_menuTheme.primaryButtonWidth * 0.5f);
+    layout.headingY = m_menuTheme.headingTop;
+
+    layout.primaryButtonWidth = m_menuTheme.primaryButtonWidth;
+    layout.primaryButtonHeight = m_menuTheme.primaryButtonHeight;
+    layout.secondaryButtonWidth = m_menuTheme.secondaryButtonWidth;
+    layout.secondaryButtonHeight = m_menuTheme.secondaryButtonHeight;
+
+    layout.primaryButtonX = centerX - (m_menuTheme.primaryButtonWidth * 0.5f);
+    layout.primaryButtonY = screen.height * m_menuTheme.primaryButtonYFactor;
+    layout.secondaryButtonX = centerX - (m_menuTheme.secondaryButtonWidth * 0.5f);
+    layout.secondaryButtonY = layout.primaryButtonY + m_menuTheme.primaryButtonHeight + m_menuTheme.buttonSpacing;
+
+    return layout;
+}
+
+void AstroVoidLayer::BuildMenuElements(UIElement& root)
+{
+    ResetMenuReferences();
+
+    auto& title = root.EmplaceChild<KibakoEngine::UILabel>("Title");
+    m_menuStyle.ApplyHeading(title);
+    title.SetText(m_menuContent.title.c_str());
+
+    auto& newGameBtn = root.EmplaceChild<KibakoEngine::UIButton>("NewGameButton");
+    newGameBtn.SetText(m_menuContent.startLabel.c_str());
+
+    auto& quitBtn = root.EmplaceChild<KibakoEngine::UIButton>("QuitButton");
+    quitBtn.SetText(m_menuContent.controlsLabel.c_str());
+
+    m_titleLabel = &title;
+    m_newGameButton = &newGameBtn;
+    m_quitButton = &quitBtn;
+}
+
+void AstroVoidLayer::ResetMenuReferences()
+{
+    m_titleLabel = nullptr;
+    m_newGameButton = nullptr;
+    m_quitButton = nullptr;
+    m_menuScreen = nullptr;
 }
 
 // Update Title State
